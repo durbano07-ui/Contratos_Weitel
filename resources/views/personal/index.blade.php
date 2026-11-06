@@ -70,7 +70,7 @@
             <form method="POST" action="{{ route('personal.destroy', $persona->id) }}" onsubmit="return confirm('¿Estás seguro de eliminar a {{ $persona->name }}? Esta acción no se puede deshacer.')">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="p-2 hover:text-secondary hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
+                <button type="submit" class="p-2 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
                     <span class="material-symbols-outlined" style="font-size:18px">delete</span>
                 </button>
             </form>

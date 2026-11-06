@@ -17,33 +17,33 @@
     <div class="text-center max-w-md mx-auto px-6">
 
         <!-- Ícono grande -->
-        <div class="w-24 h-24 rounded-2xl bg-[#212121] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-black/20">
+        <div class="w-24 h-24 rounded-2xl bg-[#1c4a75] flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-black/20">
             <span class="material-symbols-outlined text-white" style="font-size:48px; font-variation-settings: 'FILL' 1, 'wght' 400;">lock</span>
         </div>
 
         <!-- Código de error -->
-        <p class="text-[11px] font-bold uppercase tracking-[0.3em] text-[#b6171e] mb-2">Error 403 — Acceso Denegado</p>
+        <p class="text-[11px] font-bold uppercase tracking-[0.3em] text-[#f15831] mb-2">Error 403 — Acceso Denegado</p>
 
         <!-- Título -->
-        <h1 class="text-4xl font-extrabold tracking-tight text-[#0a0a0a] mb-3">
+        <h1 class="text-4xl font-extrabold tracking-tight text-[#123656] mb-3">
             Sin permiso
         </h1>
 
         <!-- Descripción -->
         <p class="text-[#444748] text-sm leading-relaxed mb-8">
-            Tu rol <strong class="text-[#0a0a0a]">Administrativo</strong> no tiene acceso a esta sección del sistema.<br>
-            Si crees que esto es un error, contacta al <strong class="text-[#0a0a0a]">Administrador del sistema</strong>.
+            Tu rol <strong class="text-[#123656]">Administrativo</strong> no tiene acceso a esta sección del sistema.<br>
+            Si crees que esto es un error, contacta al <strong class="text-[#123656]">Administrador del sistema</strong>.
         </p>
 
         <!-- Acciones -->
         <div class="flex flex-col sm:flex-row gap-3 justify-center">
             <a href="{{ url()->previous() !== url()->current() ? url()->previous() : route('contracts.index') }}"
-               class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-[#0a0a0a] text-white rounded-lg text-sm font-semibold hover:bg-[#b6171e] transition-all duration-300 shadow-lg">
+               class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-[#123656] text-white rounded-lg text-sm font-semibold hover:bg-[#f15831] transition-all duration-300 shadow-lg">
                 <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
                 <span>Volver atrás</span>
             </a>
             <a href="{{ route('contracts.index') }}"
-               class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-[#eeeeee] text-[#0a0a0a] rounded-lg text-sm font-semibold hover:bg-[#e2e2e2] transition-all duration-300">
+               class="inline-flex items-center justify-center space-x-2 px-6 py-3 bg-[#eeeeee] text-[#123656] rounded-lg text-sm font-semibold hover:bg-[#e2e2e2] transition-all duration-300">
                 <span class="material-symbols-outlined" style="font-size:18px">home</span>
                 <span>Ir a Contratos</span>
             </a>

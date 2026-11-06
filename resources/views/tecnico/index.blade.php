@@ -84,7 +84,7 @@
         align-items: center;
         justify-content: center;
         gap: 0.5rem;
-        background: #0a0a0a;
+        background: #123656;
         color: #fff;
         padding: 0.7rem 1rem;
         border-radius: 0.5rem;
@@ -96,7 +96,7 @@
         transition: background 0.15s, transform 0.1s;
         -webkit-tap-highlight-color: transparent;
     }
-    .btn-cta:hover { background: #b6171e; }
+    .btn-cta:hover { background: #f15831; }
     .btn-cta:active { transform: scale(0.97); }
     .btn-cta .material-symbols-outlined { font-size: 18px !important; }
 
@@ -173,11 +173,11 @@
                         {{-- Detalles --}}
                         <div class="space-y-2 mb-5">
                             <div class="flex items-start gap-2 text-sm">
-                                <span class="material-symbols-outlined opacity-40 mt-0.5" style="font-size:17px; color:#b6171e;">location_on</span>
+                                <span class="material-symbols-outlined opacity-40 mt-0.5" style="font-size:17px; color:#f15831;">location_on</span>
                                 <span class="font-medium text-xs leading-snug">{{ $contract->client->direccion }}</span>
                             </div>
                             <div class="flex items-center gap-2 text-sm">
-                                <span class="material-symbols-outlined opacity-40" style="font-size:17px; color:#b6171e;">speed</span>
+                                <span class="material-symbols-outlined opacity-40" style="font-size:17px; color:#f15831;">speed</span>
                                 <span class="font-black text-xs text-secondary">{{ $contract->plan->nombre_plan }}</span>
                             </div>
                         </div>
@@ -240,7 +240,7 @@
                             </td>
                             <td class="px-4 py-3 text-right">
                                 <a href="{{ route('tecnico.pdf', $contract->id_contrato) }}" target="_blank"
-                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-secondary hover:bg-red-100 transition-colors group font-bold text-xs" 
+                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-secondary/10 text-secondary hover:bg-secondary/20 transition-colors group font-bold text-xs" 
                                    title="Imprimir Anexos (2 Páginas)">
                                     <span class="material-symbols-outlined text-secondary group-hover:scale-110 transition-transform" style="font-size:18px !important;">picture_as_pdf</span>
                                     <span>Imprimir Anexos (2 Págs)</span>

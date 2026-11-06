@@ -119,7 +119,7 @@
         <form method="POST" action="{{ route('contracts.destroy', $contract->id_contrato) }}" onsubmit="return confirm('¿Eliminar el contrato #ISP-{{ \Carbon\Carbon::parse($contract->fecha)->format('Y') }}-{{ str_pad($contract->id_contrato, 3, '0', STR_PAD_LEFT) }}? Esta acción no se puede deshacer.')">
             @csrf
             @method('DELETE')
-            <button type="submit" class="p-2 hover:text-secondary hover:bg-red-50 rounded-lg transition-colors" title="Eliminar contrato">
+            <button type="submit" class="p-2 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar contrato">
                 <span class="material-symbols-outlined" data-icon="delete">delete</span>
             </button>
         </form>
@@ -154,9 +154,9 @@
         nav[role="navigation"] > div:first-child { display: none; }
         nav[role="navigation"] > div:last-child { display: flex; align-items: center; justify-content: space-between; width: 100%;}
         nav[role="navigation"] p { font-size: 0.75rem; color: #444748; }
-        nav[role="navigation"] span[aria-current="page"] > span { background-color: #0a0a0a !important; color: white !important; font-weight: bold; border: none; }
+        nav[role="navigation"] span[aria-current="page"] > span { background-color: #123656 !important; color: white !important; font-weight: bold; border: none; }
         nav[role="navigation"] a, nav[role="navigation"] span.relative.inline-flex { padding: 0.5rem 0.75rem; border: 1px solid #c4c7c7; margin: 0 0.2rem; border-radius: 0.25rem; font-size: 0.75rem; color: #1a1c1c; font-weight: bold;}
-        nav[role="navigation"] a:hover { background-color: #0a0a0a; color: white; border-color: #0a0a0a;}
+        nav[role="navigation"] a:hover { background-color: #123656; color: white; border-color: #123656;}
         nav[role="navigation"] svg { height: 1rem; width: 1rem; }
     </style>
     {{ $contracts->links() }}

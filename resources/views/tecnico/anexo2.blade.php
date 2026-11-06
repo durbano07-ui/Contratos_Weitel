@@ -35,7 +35,7 @@
         }
 
         .section-header.active {
-            background: #0a0a0a;
+            background: #123656;
             color: #fff;
         }
 
@@ -67,7 +67,7 @@
 
         .section-header.active .section-chevron {
             transform: rotate(180deg);
-            color: #b6171e;
+            color: #f15831;
         }
 
         .section-status {
@@ -91,7 +91,7 @@
         }
 
         .section-status.active-badge {
-            background: #b6171e;
+            background: #f15831;
             color: #fff;
         }
 
@@ -156,8 +156,8 @@
         .field-group input:focus,
         .field-group select:focus {
             outline: none;
-            border-color: #b6171e;
-            box-shadow: 0 0 0 3px rgba(182, 23, 30, 0.12);
+            border-color: #f15831;
+            box-shadow: 0 0 0 3px rgba(241, 88, 49, 0.12);
         }
 
         .field-group input[type="number"] {
@@ -218,7 +218,7 @@
         .equipo-num-badge {
             width: 1.6rem;
             height: 1.6rem;
-            background: #0a0a0a;
+            background: #123656;
             color: #fff;
             border-radius: 0.3rem;
             display: flex;
@@ -284,14 +284,14 @@
         }
 
         .check-card:has(input:checked) {
-            border-color: #b6171e;
+            border-color: #f15831;
             background: #fff1f1;
         }
 
         .check-card input[type="checkbox"] {
             width: 1.1rem;
             height: 1.1rem;
-            accent-color: #b6171e;
+            accent-color: #f15831;
             flex-shrink: 0;
         }
 
@@ -315,7 +315,7 @@
 
         .progress-bar-fill {
             height: 100%;
-            background: #b6171e;
+            background: #f15831;
             border-radius: 99px;
             transition: width 0.4s ease;
         }
@@ -330,8 +330,8 @@
             gap: 0.4rem;
             width: 100%;
             background: transparent;
-            color: #b6171e;
-            border: 1.5px dashed #b6171e;
+            color: #f15831;
+            border: 1.5px dashed #f15831;
             border-radius: 0.5rem;
             padding: 0.65rem 1rem;
             font-size: 0.65rem;
@@ -393,12 +393,12 @@
         }
 
         .footer-hint .material-symbols-outlined {
-            color: #b6171e;
+            color: #f15831;
             font-size: 18px !important;
         }
 
         .btn-submit {
-            background: #0a0a0a;
+            background: #123656;
             color: #fff;
             padding: 0.75rem 1.75rem;
             border-radius: 0.5rem;
@@ -414,7 +414,7 @@
         }
 
         .btn-submit:hover {
-            background: #b6171e;
+            background: #f15831;
         }
 
         .btn-submit:active {
@@ -463,8 +463,8 @@
         }
         .btn-clear {
             background: transparent;
-            color: #b6171e;
-            border: 1px solid #b6171e;
+            color: #f15831;
+            border: 1px solid #f15831;
             padding: 0.4rem 0.8rem;
             border-radius: 0.3rem;
             font-size: 0.65rem;

@@ -12,7 +12,7 @@
 @section('header_subtitle', 'Formulario Técnico de Alta de Servicio')
 
 @section('top_actions')
-    <button class="text-[#0a0a0a] dark:text-[#e8e8e8] opacity-70 hover:opacity-100 transition-opacity flex items-center gap-2">
+    <button class="text-[#123656] dark:text-[#e8e8e8] opacity-70 hover:opacity-100 transition-opacity flex items-center gap-2">
         <span class="material-symbols-outlined">help</span>
         <span class="font-medium text-sm">Help</span>
     </button>
@@ -456,7 +456,7 @@
                     <a href="{{ route('contracts.index') }}" class="bg-transparent border-2 border-primary text-primary px-8 py-4 font-bold tracking-widest uppercase transition-all hover:bg-surface-container active:scale-95 duration-150 inline-block">
                         Cancelar
                     </a>
-                    <button type="submit" id="submit-btn" class="bg-[#b6171e] hover:bg-[#da3433] text-white px-10 py-4 font-bold tracking-widest uppercase transition-all scale-100 hover:scale-105 active:scale-95 duration-150">
+                    <button type="submit" id="submit-btn" class="bg-[#f15831] hover:bg-[#d9441c] text-white px-10 py-4 font-bold tracking-widest uppercase transition-all scale-100 hover:scale-105 active:scale-95 duration-150">
                         Crear Contrato
                     </button>
                 </div>

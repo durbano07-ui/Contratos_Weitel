@@ -18,21 +18,21 @@
               "on-background": "#1a1c1c",
               "on-secondary": "#ffffff",
               "surface-variant": "#e2e2e2",
-              "secondary": "#b6171e",
+              "secondary": "#f15831",
               "surface-container-low": "#f3f3f4",
               "inverse-surface": "#2f3131",
               "surface-dim": "#dadada",
-              "primary-container": "#212121",
+              "primary-container": "#1c4a75",
               "tertiary": "#100900",
               "surface-container-high": "#e8e8e8",
               "surface": "#f9f9f9",
-              "on-primary-container": "#898888",
+              "on-primary-container": "#a9bdd3",
               "surface-container": "#eeeeee",
               "on-surface": "#1a1c1c",
               "error-container": "#ffdad6",
               "tertiary-fixed-dim": "#f8bd2a",
-              "primary": "#0a0a0a",
-              "on-secondary-fixed": "#410003",
+              "primary": "#123656",
+              "on-secondary-fixed": "#3d1206",
               "primary-fixed-dim": "#c8c6c5",
               "on-surface-variant": "#444748",
               "on-error": "#ffffff",
@@ -48,14 +48,14 @@
               "outline-variant": "#c4c7c7",
               "on-tertiary-fixed": "#261a00",
               "surface-bright": "#f9f9f9",
-              "surface-tint": "#5f5e5e",
-              "on-secondary-fixed-variant": "#930010",
+              "surface-tint": "#123656",
+              "on-secondary-fixed-variant": "#a3361a",
               "tertiary-container": "#2d1f00",
-              "secondary-fixed": "#ffdad6",
-              "secondary-fixed-dim": "#ffb3ac",
+              "secondary-fixed": "#ffe0d6",
+              "secondary-fixed-dim": "#ffb59e",
               "primary-fixed": "#e5e2e1",
               "surface-container-highest": "#e2e2e2",
-              "secondary-container": "#da3433",
+              "secondary-container": "#d9441c",
               "on-primary": "#ffffff",
               "background": "#f9f9f9"
             },
@@ -74,10 +74,10 @@
         font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
       }
       .ledger-line:focus-within {
-        border-bottom: 2px solid #0a0a0a;
+        border-bottom: 2px solid #123656;
       }
       .gradient-button {
-        background: linear-gradient(145deg, #b6171e 0%, #da3433 100%);
+        background: linear-gradient(145deg, #f15831 0%, #d9441c 100%);
       }
     </style>
 </head>
@@ -118,8 +118,8 @@
 </main>
 <footer class="fixed bottom-0 w-full flex flex-row justify-between items-center px-10 py-8 bg-[#f9f9f9]">
 <div class="flex flex-col md:flex-row gap-6 items-center">
-<span class="font-['Manrope'] font-bold text-[#0a0a0a] text-sm tracking-tighter">Weitel</span>
-<p class="font-['Inter'] text-[10px] tracking-[0.05em] uppercase text-[#212121] opacity-60">© 2026 Weitel Sistema de contratos.</p>
+<span class="font-['Manrope'] font-bold text-[#123656] text-sm tracking-tighter">Weitel</span>
+<p class="font-['Inter'] text-[10px] tracking-[0.05em] uppercase text-[#1c4a75] opacity-60">© 2026 Weitel Sistema de contratos.</p>
 </div>
 </footer>
 </body></html>

@@ -69,7 +69,7 @@
                     <form method="POST" action="{{ route('extensiones.destroy', $ext->id) }}" class="inline" onsubmit="return confirm('¿Eliminar la extensión &#64;{{ $ext->dominio }}? Los correos de clientes existentes no se modifican.')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="p-2 hover:text-secondary hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
+                        <button type="submit" class="p-2 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
                             <span class="material-symbols-outlined" style="font-size:18px">delete</span>
                         </button>
                     </form>

@@ -15,7 +15,7 @@
             theme: {
                 extend: {
                     colors: {
-                        "secondary": "#b6171e",
+                        "secondary": "#f15831",
                         "tertiary-container": "#2d1f00",
                         "on-surface": "#1a1c1c",
                         "outline": "#747878",
@@ -26,42 +26,42 @@
                         "error": "#ba1a1a",
                         "outline-variant": "#c4c7c7",
                         "on-primary-fixed": "#1b1c1c",
-                        "on-secondary-fixed-variant": "#930010",
+                        "on-secondary-fixed-variant": "#a3361a",
                         "surface-container-highest": "#e2e2e2",
                         "on-background": "#1a1c1c",
                         "tertiary": "#100900",
                         "on-primary-fixed-variant": "#474746",
                         "on-tertiary-container": "#ae8100",
-                        "primary": "#0a0a0a",
+                        "primary": "#123656",
                         "surface-container-low": "#f3f3f4",
-                        "surface-tint": "#5f5e5e",
+                        "surface-tint": "#123656",
                         "on-tertiary-fixed": "#261a00",
                         "inverse-on-surface": "#f0f1f1",
                         "inverse-primary": "#c8c6c5",
                         "on-secondary-container": "#fffbff",
                         "surface": "#f9f9f9",
                         "on-surface-variant": "#444748",
-                        "on-secondary-fixed": "#410003",
-                        "primary-container": "#212121",
+                        "on-secondary-fixed": "#3d1206",
+                        "primary-container": "#1c4a75",
                         "surface-bright": "#f9f9f9",
                         "background": "#f9f9f9",
                         "primary-fixed-dim": "#c8c6c5",
                         "on-tertiary": "#ffffff",
-                        "secondary-container": "#da3433",
+                        "secondary-container": "#d9441c",
                         "tertiary-fixed": "#ffdfa0",
-                        "on-primary-container": "#898888",
+                        "on-primary-container": "#a9bdd3",
                         "on-error": "#ffffff",
                         "on-secondary": "#ffffff",
                         "error-container": "#ffdad6",
                         "on-tertiary-fixed-variant": "#5c4300",
                         "surface-variant": "#e2e2e2",
                         "surface-container-high": "#e8e8e8",
-                        "secondary-fixed": "#ffdad6",
+                        "secondary-fixed": "#ffe0d6",
                         "tertiary-fixed-dim": "#f8bd2a",
                         "surface-container-lowest": "#ffffff",
                         "surface-container": "#eeeeee",
                         "on-error-container": "#93000a",
-                        "secondary-fixed-dim": "#ffb3ac"
+                        "secondary-fixed-dim": "#ffb59e"
                     },
                     fontFamily: {
                         "headline": ["Manrope"],
@@ -92,7 +92,7 @@
             font-family: 'Manrope', sans-serif;
         }
         .sidebar-active {
-            background-color: #b6171e;
+            background-color: #f15831;
             color: white;
             border-radius: 0.25rem;
         }
@@ -177,7 +177,7 @@
     <div id="sidebar-overlay" onclick="closeSidebar()"></div>
 
     <!-- SideNavBar -->
-    <aside id="main-sidebar" class="fixed left-0 top-0 h-full w-64 flex flex-col p-6 space-y-2 bg-[#f9f9f9] dark:bg-[#0a0a0a] z-50">
+    <aside id="main-sidebar" class="fixed left-0 top-0 h-full w-64 flex flex-col p-6 space-y-2 bg-[#f9f9f9] dark:bg-[#123656] z-50">
         <div class="flex items-center space-x-3 mb-4">
             <img alt="Weitel Logo" class="h-12 w-auto object-contain" src="{{ asset('img/logo_weitel.png') }}"/>
         </div>
@@ -185,45 +185,45 @@
         <nav class="flex-1 flex flex-col space-y-1 overflow-y-auto">
             @if(Auth::user()->isTecnico())
                 <p class="sidebar-section-label">Técnico</p>
-                <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('tecnico.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('tecnico.index') }}">
+                <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('tecnico.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('tecnico.index') }}">
                     <span class="material-symbols-outlined" {!! request()->routeIs('tecnico.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>handyman</span>
                     <span class="font-label text-sm uppercase tracking-wider">Mis Instalaciones</span>
                 </a>
             @else
                 <p class="sidebar-section-label">Gestión</p>
-                <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('contracts.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('contracts.index') }}">
+                <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('contracts.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('contracts.index') }}">
                     <span class="material-symbols-outlined" {!! request()->routeIs('contracts.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>description</span>
                     <span class="font-label text-sm uppercase tracking-wider">Contratos</span>
                 </a>
-                <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('clientes.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('clientes.index') }}">
+                <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('clientes.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('clientes.index') }}">
                     <span class="material-symbols-outlined" {!! request()->routeIs('clientes.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>group</span>
                     <span class="font-label text-sm uppercase tracking-wider">Clientes</span>
                 </a>
 
                 @if(Auth::user()->isAdministrador())
                     <p class="sidebar-section-label mt-4">Administración</p>
-                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('personal.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('personal.index') }}">
+                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('personal.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('personal.index') }}">
                         <span class="material-symbols-outlined" {!! request()->routeIs('personal.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>badge</span>
                         <span class="font-label text-sm uppercase tracking-wider">Personal</span>
                     </a>
-                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('planes.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('planes.index') }}">
+                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('planes.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('planes.index') }}">
                         <span class="material-symbols-outlined" {!! request()->routeIs('planes.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>wifi</span>
                         <span class="font-label text-sm uppercase tracking-wider">Planes</span>
                     </a>
-                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('duraciones.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('duraciones.index') }}">
+                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('duraciones.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('duraciones.index') }}">
                         <span class="material-symbols-outlined" {!! request()->routeIs('duraciones.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>event_repeat</span>
                         <span class="font-label text-sm uppercase tracking-wider">Duraciones</span>
                     </a>
-                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('extensiones.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('extensiones.index') }}">
+                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('extensiones.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('extensiones.index') }}">
                         <span class="material-symbols-outlined" {!! request()->routeIs('extensiones.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>alternate_email</span>
                         <span class="font-label text-sm uppercase tracking-wider">Extensiones Email</span>
                     </a>
-                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('equipos.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('equipos.index') }}">
+                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('equipos.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('equipos.index') }}">
                         <span class="material-symbols-outlined" {!! request()->routeIs('equipos.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>inventory_2</span>
                         <span class="font-label text-sm uppercase tracking-wider">Inventario</span>
                     </a>
                     <p class="sidebar-section-label mt-4">Sistema</p>
-                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('auditoria.*') ? 'bg-[#b6171e] text-white' : 'text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white' }}" href="{{ route('auditoria.index') }}">
+                    <a class="flex items-center space-x-3 p-3 rounded-lg transition-all duration-300 {{ request()->routeIs('auditoria.*') ? 'bg-[#f15831] text-white' : 'text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white' }}" href="{{ route('auditoria.index') }}">
                         <span class="material-symbols-outlined" {!! request()->routeIs('auditoria.*') ? 'style="font-variation-settings: \'FILL\' 1;"' : '' !!}>analytics</span>
                         <span class="font-label text-sm uppercase tracking-wider">Auditoría</span>
                     </a>
@@ -249,7 +249,7 @@
                     @endif
                 </div>
             </div>
-            <a class="flex items-center space-x-3 p-3 text-[#0a0a0a] dark:text-[#f3f3f4] opacity-80 hover:bg-[#b6171e] hover:text-white rounded-lg transition-all duration-300" href="{{ route('logout') }}">
+            <a class="flex items-center space-x-3 p-3 text-[#123656] dark:text-[#f3f3f4] opacity-80 hover:bg-[#f15831] hover:text-white rounded-lg transition-all duration-300" href="{{ route('logout') }}">
                 <span class="material-symbols-outlined" data-icon="logout">logout</span>
                 <span class="font-label text-sm uppercase tracking-wider">Cerrar Sesión</span>
             </a>
