@@ -1,5 +1,7 @@
 -- Estructura de la base de Contratos Weitel (mismas tablas que Fibercom, sin datos).
 -- Importar en phpMyAdmin: seleccionar la base de Weitel > pestaña Importar > este archivo.
+-- Incluye todas las tablas y los datos base (tipos de conexión, duraciones, dominios de correo, planes Weitel).
+-- El usuario administrador se crea aparte con crear_admin_weitel.sql
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -317,7 +319,8 @@ INSERT INTO `migrations` VALUES
 (18,'2026_04_11_000001_add_promocion_fields_to_internet_plans_table',2),
 (19,'2026_10_13_000001_add_base_to_users_and_contracts',3),
 (20,'2026_10_13_000002_add_parroquia_to_clients_table',4),
-(21,'2026_10_16_000001_create_contract_durations_table',5);
+(21,'2026_10_16_000001_create_contract_durations_table',5),
+(22,'2026_11_04_000001_create_email_domains_table',6);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -329,3 +332,38 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
+-- ------------------------------------------------------------
+-- Tabla email_domains (migración 2026_11_04)
+-- ------------------------------------------------------------
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `email_domains`;
+CREATE TABLE `email_domains` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `dominio` varchar(100) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `email_domains_dominio_unique` (`dominio`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ------------------------------------------------------------
+-- Datos base de Weitel
+-- ------------------------------------------------------------
+-- El sistema identifica "Radio Enlace" por id_tipo = 2 (marca "Inalámbrico" en el Anexo 1)
+INSERT INTO `internet_types` (`id_tipo`, `nombre_tipo`, `created_at`, `updated_at`) VALUES
+(1, 'Fibra Óptica', NOW(), NOW()),
+(2, 'Radio Enlace', NOW(), NOW());
+
+INSERT INTO `contract_durations` (`meses`, `created_at`, `updated_at`) VALUES
+(24, NOW(), NOW()),
+(36, NOW(), NOW());
+
+INSERT INTO `email_domains` (`dominio`, `created_at`, `updated_at`) VALUES
+('gmail.com', NOW(), NOW()), ('hotmail.com', NOW(), NOW()), ('outlook.com', NOW(), NOW()),
+('yahoo.com', NOW(), NOW()), ('yahoo.es', NOW(), NOW()), ('live.com', NOW(), NOW()), ('icloud.com', NOW(), NOW());
+
+-- Planes Weitel (precio con IVA; el contrato muestra la tarifa sin IVA: 13.04 y 17.39)
+INSERT INTO `internet_plans` (`id_tipo`, `nombre_plan`, `precio`, `precio_regular`, `es_promocional`, `velocidad`, `created_at`, `updated_at`) VALUES
+(2, 'WEITEL PLAN DE TERCERA EDAD', 15.00, NULL, 0, '8 MEGAS', NOW(), NOW()),
+(2, 'WEITEL HOME ESTUDIANTIL', 20.00, NULL, 0, '12 MEGAS', NOW(), NOW());
+SET FOREIGN_KEY_CHECKS=1;
