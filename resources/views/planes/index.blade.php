@@ -5,91 +5,100 @@
 
 @section('content')
 
-<!-- Stats ribbon -->
-<section class="grid grid-cols-2 gap-1 bg-primary-container p-1 rounded-xl overflow-hidden shadow-xl">
-    <div class="bg-primary-container p-6 flex flex-col justify-center border-r border-white/5">
-        <span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-primary-container">Total Planes</span>
-        <span class="text-3xl font-headline font-extrabold tracking-tighter mt-1 text-white">{{ $total_planes }}</span>
+<!-- Indicadores (tiles Carbon) -->
+<section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="cds-tile">
+        <p class="cds-label-01">Total de planes</p>
+        <p class="mt-2 text-[2rem] leading-10 font-light text-primary">{{ $total_planes }}</p>
     </div>
-    <div class="bg-primary-container p-6 flex flex-col justify-center">
-        <span class="font-label text-[10px] uppercase tracking-[0.2em] text-on-primary-container">Ingresos Mensuales (contratos)</span>
-        <span class="text-3xl font-headline font-extrabold tracking-tighter mt-1 text-tertiary-fixed-dim">
-            ${{ number_format($total_ingresos, 2) }}
-        </span>
+    <div class="cds-tile">
+        <p class="cds-label-01">Ingresos mensuales (contratos)</p>
+        <p class="mt-2 text-[2rem] leading-10 font-light text-primary">${{ number_format($total_ingresos, 2) }}</p>
     </div>
 </section>
 
-<!-- Header + Acción -->
-<div class="flex justify-between items-end">
-    <div class="pl-4 border-l-4 border-secondary">
-        <h3 class="text-sm font-label uppercase tracking-widest text-on-surface-variant">Catálogo</h3>
-        <h2 class="text-3xl font-headline font-extrabold tracking-tight -mt-1">Planes Disponibles</h2>
-    </div>
-    <a href="{{ route('planes.create') }}" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-secondary transition-all duration-300 text-sm font-semibold shadow-lg shadow-primary/10">
-        <span class="material-symbols-outlined" style="font-size:18px">add</span>
-        <span>Nuevo Plan</span>
-    </a>
-</div>
+<!-- Planes en pestañas por tipo de conexión -->
+@php
+    $tiposConPlanes = $tipos->filter(fn($t) => $t->plans->count() > 0)->values();
+    $tipoActivo = $tiposConPlanes->first(fn($t) => $t->id_tipo == request()->query('tipo')) ?? $tiposConPlanes->first();
+@endphp
 
-<!-- Planes agrupados por tipo -->
-@foreach($tipos as $tipo)
-@if($tipo->plans->count() > 0)
-<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_24px_48px_-12px_rgba(26,28,28,0.08)]">
-    <div class="p-5 bg-surface-container-low border-b border-outline-variant/30 flex items-center space-x-2">
-        <span class="material-symbols-outlined text-secondary" style="font-size:20px">wifi</span>
-        <h4 class="font-headline font-bold text-base">{{ $tipo->nombre_tipo }}</h4>
-        <span class="ml-auto text-xs text-outline">{{ $tipo->plans->count() }} plan(es)</span>
+<div>
+    @if($tiposConPlanes->count() > 0)
+    <div class="cds-tabs" role="tablist" aria-label="Tipo de conexión">
+        @foreach($tiposConPlanes as $tipo)
+            @php
+                $activa = $tipo->id_tipo == $tipoActivo->id_tipo;
+                $nombreTipo = mb_strtoupper($tipo->nombre_tipo);
+                $icono = (str_contains($nombreTipo, 'RADIO') || str_contains($nombreTipo, 'INAL')) ? 'settings_input_antenna' : 'cable';
+            @endphp
+            <a href="{{ route('planes.index', ['tipo' => $tipo->id_tipo]) }}" role="tab" aria-selected="{{ $activa ? 'true' : 'false' }}"
+               class="cds-tab {{ $activa ? 'is-active' : '' }}">
+                <span class="material-symbols-outlined" style="font-size:20px">{{ $icono }}</span>
+                <span>{{ $tipo->nombre_tipo }}</span>
+                <span class="cds-tag cds-tag--gray">{{ $tipo->plans->count() }}</span>
+            </a>
+        @endforeach
     </div>
-    <table class="w-full text-left border-collapse">
+    @endif
+
+
+@foreach($tiposConPlanes as $tipo)
+@if($tipo->id_tipo == $tipoActivo->id_tipo)
+<div role="tabpanel" class="cds-card">
+    <div class="cds-table-toolbar">
+        <div>
+            <h2 class="cds-section-title">Planes de {{ $tipo->nombre_tipo }}</h2>
+            <p class="cds-label-01 mt-1">{{ $tipo->plans->count() }} plan(es) · ordenados por precio</p>
+        </div>
+        <a href="{{ route('planes.create') }}" class="cds-btn cds-btn--primary">
+            <span>Nuevo plan</span>
+            <span class="material-symbols-outlined">add</span>
+        </a>
+    </div>
+    <div class="overflow-x-auto">
+    <table class="cds-table">
         <thead>
-            <tr class="bg-surface-container-low/50">
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Nombre del Plan</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Velocidad</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Precio / Mes</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Contratos</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant text-right">Acciones</th>
+            <tr>
+                <th>Nombre del plan</th>
+                <th>Velocidad</th>
+                <th>Precio / mes</th>
+                <th>Contratos</th>
+                <th class="text-right"><span class="sr-only">Acciones</span></th>
             </tr>
         </thead>
-        <tbody class="text-sm font-body">
-            @foreach($tipo->plans as $plan)
-            <tr class="hover:bg-surface transition-colors {{ $loop->even ? 'bg-surface-container-low/30' : '' }}">
-                <td class="p-4 font-semibold text-primary">
+        <tbody>
+            @foreach($tipo->plans->sortBy('precio') as $plan)
+            <tr>
+                <td class="cds-cell-strong">
                     <div class="flex items-center gap-2 flex-wrap">
                         <span>{{ $plan->nombre_plan }}</span>
                         @if($plan->es_promocional || Str::contains(strtoupper($plan->nombre_plan), 'TERCERA EDAD'))
-                            <span class="px-2 py-0.5 bg-secondary text-white text-[9px] font-extrabold rounded-full uppercase tracking-wider shadow-sm">
-                                Promocional
-                            </span>
+                            <span class="cds-tag cds-tag--red">Promocional</span>
                         @endif
                     </div>
                 </td>
-                <td class="p-4">
-                    <span class="flex items-center space-x-1">
-                        <span class="material-symbols-outlined text-secondary" style="font-size:16px">speed</span>
-                        <span>{{ $plan->velocidad }}</span>
-                    </span>
-                </td>
-                <td class="p-4">
-                    <div class="font-bold text-primary">${{ number_format($plan->precio, 2) }}</div>
+                <td>{{ $plan->velocidad }}</td>
+                <td>
+                    <span class="font-mono text-primary">${{ number_format($plan->precio, 2) }}</span>
                     @if($plan->precio_regular && $plan->precio_regular > $plan->precio)
-                        <div class="text-[11px] text-outline line-through opacity-70">Reg: ${{ number_format($plan->precio_regular, 2) }}</div>
+                        <span class="ml-2 text-xs text-on-surface-variant line-through font-mono">${{ number_format($plan->precio_regular, 2) }}</span>
                     @endif
                 </td>
-                <td class="p-4">
-                    <span class="px-2 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full">
-                        {{ $plan->contracts_count ?? $plan->contracts()->count() }} activos
-                    </span>
+                <td>
+                    @php $nContratos = $plan->contracts_count ?? $plan->contracts()->count(); @endphp
+                    <span class="cds-tag cds-tag--gray">{{ $nContratos }} {{ $nContratos == 1 ? 'activo' : 'activos' }}</span>
                 </td>
-                <td class="p-4 text-right">
-                    <div class="flex justify-end space-x-1">
-                        <a href="{{ route('planes.edit', $plan->id_plan) }}" class="p-2 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Editar">
-                            <span class="material-symbols-outlined" style="font-size:18px">edit</span>
+                <td class="text-right">
+                    <div class="flex justify-end">
+                        <a href="{{ route('planes.edit', $plan->id_plan) }}" class="cds-btn cds-btn--ghost cds-btn--icon" title="Editar" aria-label="Editar {{ $plan->nombre_plan }}">
+                            <span class="material-symbols-outlined">edit</span>
                         </a>
                         <form method="POST" action="{{ route('planes.destroy', $plan->id_plan) }}" onsubmit="return confirm('¿Eliminar el plan \'{{ $plan->nombre_plan }}\'? Esta acción no se puede deshacer.')">
                             @csrf
                             @method('DELETE')
-                            <button type="submit" class="p-2 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
-                                <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+                            <button type="submit" class="cds-btn cds-btn--danger-ghost cds-btn--icon" title="Eliminar" aria-label="Eliminar {{ $plan->nombre_plan }}">
+                                <span class="material-symbols-outlined">delete</span>
                             </button>
                         </form>
                     </div>
@@ -98,15 +107,20 @@
             @endforeach
         </tbody>
     </table>
+    </div>
 </div>
 @endif
 @endforeach
+</div>
 
 @if($tipos->sum(fn($t) => $t->plans->count()) === 0)
-<div class="bg-surface-container-lowest rounded-xl p-12 text-center text-on-surface-variant shadow">
+<div class="cds-tile py-12 text-center">
     <span class="material-symbols-outlined text-5xl text-outline mb-3 block">wifi_off</span>
-    <p class="font-semibold">No hay planes registrados</p>
-    <a href="{{ route('planes.create') }}" class="mt-4 inline-block text-secondary hover:underline text-sm">Crear el primer plan →</a>
+    <p class="cds-section-title">No hay planes registrados</p>
+    <a href="{{ route('planes.create') }}" class="cds-btn cds-btn--primary mt-6">
+        <span>Crear el primer plan</span>
+        <span class="material-symbols-outlined">add</span>
+    </a>
 </div>
 @endif
 

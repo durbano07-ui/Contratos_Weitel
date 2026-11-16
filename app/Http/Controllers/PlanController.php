@@ -51,7 +51,7 @@ class PlanController extends Controller
             'details' => "Plan '{$data['nombre_plan']}' creado a \${$data['precio']}",
         ]);
 
-        return redirect()->route('planes.index')->with('success', 'Plan creado exitosamente.');
+        return redirect()->route('planes.index', ['tipo' => $data['id_tipo']])->with('success', 'Plan creado exitosamente.');
     }
 
     public function edit($id)
@@ -84,7 +84,7 @@ class PlanController extends Controller
             'details' => "Plan ID {$id} actualizado a '{$data['nombre_plan']}'",
         ]);
 
-        return redirect()->route('planes.index')->with('success', 'Plan actualizado correctamente.');
+        return redirect()->route('planes.index', ['tipo' => $data['id_tipo']])->with('success', 'Plan actualizado correctamente.');
     }
 
     public function destroy($id)
@@ -93,7 +93,7 @@ class PlanController extends Controller
 
         // Verificar que no tiene contratos activos
         if ($plan->contracts()->count() > 0) {
-            return redirect()->route('planes.index')
+            return redirect()->route('planes.index', ['tipo' => $plan->id_tipo])
                 ->with('error', "No se puede eliminar: el plan '{$plan->nombre_plan}' tiene contratos asociados.");
         }
 
@@ -106,7 +106,7 @@ class PlanController extends Controller
 
         $plan->delete();
 
-        return redirect()->route('planes.index')->with('success', 'Plan eliminado.');
+        return redirect()->route('planes.index', ['tipo' => $plan->id_tipo])->with('success', 'Plan eliminado.');
     }
 
     // -------------------------------------------------------

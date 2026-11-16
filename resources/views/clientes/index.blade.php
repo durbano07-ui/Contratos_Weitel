@@ -1,124 +1,151 @@
 @extends('layouts.app')
 
-@section('header_title', Auth::user()->isAdministrador() ? 'Clientes' : 'Mis Clientes')
-@section('header_subtitle', Auth::user()->isAdministrador() ? 'Directorio Central de Usuarios y Servicios' : 'Clientes de tus contratos registrados')
+@section('header_title', Auth::user()->isAdministrador() ? 'Clientes' : 'Mis clientes')
+@section('header_subtitle', Auth::user()->isAdministrador() ? 'Directorio central de usuarios y servicios' : 'Clientes de tus contratos registrados')
 
 @section('content')
-<!-- Data Summary Ribbon -->
-<section class="bg-primary-container text-white p-8 rounded-xl flex justify-between items-center overflow-hidden relative shadow-xl">
-<div class="relative z-10 flex space-x-16">
-<div>
-<p class="text-[10px] font-label uppercase tracking-[0.2em] text-on-primary-container mb-1">Total Clientes</p>
-<p class="text-4xl font-headline font-extrabold tracking-tighter">{{ number_format($total_clientes) }}</p>
-</div>
-<div>
-<p class="text-[10px] font-label uppercase tracking-[0.2em] text-on-primary-container mb-1">Nuevos (Mes)</p>
-<p class="text-4xl font-headline font-extrabold tracking-tighter">+{{ number_format($nuevos_mes) }}</p>
-</div>
-@if(Auth::user()->isAdministrador())
-<div>
-<p class="text-[10px] font-label uppercase tracking-[0.2em] text-red-300 mb-1">Dados de Baja</p>
-<p class="text-4xl font-headline font-extrabold tracking-tighter text-red-300">{{ number_format($clientes_baja) }}</p>
-</div>
-@endif
-</div>
-<!-- Abstract architectural background texture -->
-<div class="absolute right-0 top-0 w-1/3 h-full opacity-10 pointer-events-none">
-<svg class="h-full w-full fill-current" viewbox="0 0 100 100">
-<rect height="2" width="80" x="10" y="10"></rect>
-<rect height="2" width="80" x="10" y="30"></rect>
-<rect height="2" width="80" x="10" y="50"></rect>
-<rect height="2" width="80" x="10" y="70"></rect>
-<rect height="2" width="80" x="10" y="90"></rect>
-</svg>
-</div>
+@php $esAdmin = Auth::user()->isAdministrador(); @endphp
+
+<!-- Indicadores (tiles Carbon) -->
+<section class="grid grid-cols-1 sm:grid-cols-{{ $esAdmin ? 3 : 2 }} gap-4">
+    <div class="cds-tile">
+        <p class="cds-label-01">Total de clientes</p>
+        <p class="mt-2 text-[2rem] leading-10 font-light text-primary">{{ number_format($total_clientes) }}</p>
+    </div>
+    <div class="cds-tile">
+        <p class="cds-label-01">Nuevos del mes</p>
+        <p class="mt-2 text-[2rem] leading-10 font-light text-primary">+{{ number_format($nuevos_mes) }}</p>
+    </div>
+    @if($esAdmin)
+    <div class="cds-tile">
+        <p class="cds-label-01">Dados de baja</p>
+        <p class="mt-2 text-[2rem] leading-10 font-light {{ $clientes_baja > 0 ? 'text-error' : 'text-primary' }}">{{ number_format($clientes_baja) }}</p>
+    </div>
+    @endif
 </section>
 
-<!-- Table Section (High Density Ledger Style to match Contratos) -->
-<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_24px_48px_-12px_rgba(26,28,28,0.08)]">
-<table class="w-full text-left border-collapse">
-<thead>
-<tr class="bg-surface-container-low">
-<th class="p-5 font-label text-[11px] uppercase tracking-wider text-on-surface-variant border-none">Nombre del Cliente</th>
-<th class="p-5 font-label text-[11px] uppercase tracking-wider text-on-surface-variant border-none">Cédula / RUC</th>
-<th class="p-5 font-label text-[11px] uppercase tracking-wider text-on-surface-variant border-none">Plan Contratado</th>
-<th class="p-5 font-label text-[11px] uppercase tracking-wider text-on-surface-variant border-none text-center">Estado</th>
-<th class="p-5 font-label text-[11px] uppercase tracking-wider text-on-surface-variant border-none text-right">Contacto</th>
-</tr>
-</thead>
-<tbody class="text-sm font-body">
-
-@forelse($clientes as $client)
-<tr class="hover:bg-surface transition-colors cursor-pointer group {{ $loop->even ? 'bg-surface-container-low/30' : '' }}">
-<td class="p-5">
-<div class="flex items-center space-x-3">
-<div class="w-8 h-8 rounded-full {{ ['bg-primary-container text-white', 'bg-outline-variant text-on-surface', 'bg-secondary text-white', 'bg-tertiary-fixed text-on-tertiary-fixed-variant'][$loop->index % 4] }} flex items-center justify-center font-bold text-[10px]">
-{{ strtoupper(substr($client->nombre ?? 'N', 0, 2)) }}
-</div>
 <div>
-<p class="font-bold text-sm text-primary tracking-tight">{{ $client->nombre }} {{ $client->apellido ?? '' }}</p>
-<p class="text-[11px] text-outline font-body">ID: CL-{{ str_pad($client->id_cliente ?? $client->id ?? 0, 5, '0', STR_PAD_LEFT) }}</p>
-</div>
-</div>
-</td>
-<td class="p-5 font-body text-primary">{{ $client->cedula }}</td>
-<td class="p-5">{{ optional(optional($client->contracts->first())->plan)->nombre_plan ?? 'Ninguno' }}</td>
-<td class="p-5 text-center">
-<span class="px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full
-    {{ $client->isBaja()
-        ? 'bg-red-100 text-red-700'
-        : ($client->contracts->count() > 0 ? 'bg-green-100 text-green-800' : 'bg-surface-container-high text-on-surface-variant')
-    }}">
-    {{ $client->isBaja() ? 'BAJA' : ($client->contracts->count() > 0 ? 'ACTIVO' : 'SIN CONTRATO') }}
-</span>
-</td>
-<td class="p-5 text-right">
-<div class="flex items-center justify-end space-x-1">
-    <p class="text-sm font-body truncate" title="{{ $client->email }}">{{ \Illuminate\Support\Str::limit($client->email, 22) }}</p>
-    @if(Auth::user()->isAdministrador())
-    <a href="{{ route('clientes.edit', $client->id_cliente) }}"
-       class="ml-3 p-1.5 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Editar cliente">
-        <span class="material-symbols-outlined" style="font-size:18px">edit</span>
-    </a>
-    @if($client->isBaja())
-        <form method="POST" action="{{ route('clientes.reactivar', $client->id_cliente) }}" onsubmit="return confirm('¿Reactivar a {{ $client->nombre }}?')">
-            @csrf
-            <button type="submit" class="p-1.5 hover:text-green-700 hover:bg-green-50 rounded-lg transition-colors" title="Reactivar">
-                <span class="material-symbols-outlined" style="font-size:18px">restart_alt</span>
-            </button>
-        </form>
-    @else
-        <a href="{{ route('clientes.edit', $client->id_cliente) }}#baja"
-           class="p-1.5 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Dar de baja">
-            <span class="material-symbols-outlined" style="font-size:18px">block</span>
-        </a>
-    @endif
-    @endif
-</div>
-</td>
-</tr>
-@empty
-<tr>
-<td colspan="5" class="p-10 text-center text-on-surface-variant">No hay clientes registrados en el sistema.</td>
-</tr>
-@endforelse
+    <!-- Pestañas por tipo de conexión -->
+    <div class="cds-tabs" role="tablist" aria-label="Tipo de conexión">
+        @foreach($tipos as $tipo)
+            @php
+                $activa = $tipoActivo == $tipo->id_tipo;
+                $nombreTipo = mb_strtoupper($tipo->nombre_tipo);
+                $icono = (str_contains($nombreTipo, 'RADIO') || str_contains($nombreTipo, 'INAL')) ? 'settings_input_antenna' : 'cable';
+            @endphp
+            <a href="{{ route('clientes.index', array_filter(['tipo' => $tipo->id_tipo, 'q' => $busqueda])) }}" role="tab" aria-selected="{{ $activa ? 'true' : 'false' }}"
+               class="cds-tab {{ $activa ? 'is-active' : '' }}">
+                <span class="material-symbols-outlined" style="font-size:20px">{{ $icono }}</span>
+                <span>{{ $tipo->nombre_tipo }}</span>
+                <span class="cds-tag cds-tag--gray">{{ $tipo->clientes_count }}</span>
+            </a>
+        @endforeach
+        @if($sin_contrato_count > 0)
+            @php $activa = $tipoActivo === 'sin'; @endphp
+            <a href="{{ route('clientes.index', array_filter(['tipo' => 'sin', 'q' => $busqueda])) }}" role="tab" aria-selected="{{ $activa ? 'true' : 'false' }}"
+               class="cds-tab {{ $activa ? 'is-active' : '' }}">
+                <span class="material-symbols-outlined" style="font-size:20px">person_off</span>
+                <span>Sin contrato</span>
+                <span class="cds-tag cds-tag--gray">{{ $sin_contrato_count }}</span>
+            </a>
+        @endif
+    </div>
 
-</tbody>
-</table>
+    <div role="tabpanel" class="cds-card">
+        <!-- Barra de herramientas: título y búsqueda -->
+        <div class="cds-table-toolbar flex-wrap">
+            <div>
+                <h2 class="cds-section-title">Directorio de clientes</h2>
+                <p class="cds-label-01 mt-1">
+                    @if($busqueda !== '')
+                        {{ $clientes->total() }} resultado(s) para “{{ $busqueda }}”
+                    @else
+                        {{ $clientes->total() }} cliente(s) en esta pestaña
+                    @endif
+                </p>
+            </div>
+            <form method="GET" action="{{ route('clientes.index') }}" class="flex items-center" role="search">
+                <input type="hidden" name="tipo" value="{{ $tipoActivo }}">
+                <div class="cds-search">
+                    <span class="material-symbols-outlined">search</span>
+                    <input type="search" name="q" value="{{ $busqueda }}" autocomplete="off" placeholder="Buscar por nombre, cédula o email" aria-label="Buscar clientes">
+                </div>
+                @if($busqueda !== '')
+                    <a href="{{ route('clientes.index', ['tipo' => $tipoActivo]) }}" class="cds-btn cds-btn--ghost cds-btn--icon" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">
+                        <span class="material-symbols-outlined">close</span>
+                    </a>
+                @endif
+            </form>
+        </div>
 
-<!-- Pagination/Footer -->
-<div class="p-5 bg-surface-container-low border-t border-outline-variant/30 w-full overflow-hidden">
-    <style>
-        nav[role="navigation"] { display: flex; align-items: center; justify-content: space-between; width: 100%; font-family: 'Inter', sans-serif;}
-        nav[role="navigation"] > div:first-child { display: none; }
-        nav[role="navigation"] > div:last-child { display: flex; align-items: center; justify-content: space-between; width: 100%;}
-        nav[role="navigation"] p { font-size: 0.75rem; color: #444748; }
-        nav[role="navigation"] span[aria-current="page"] > span { background-color: #123656 !important; color: white !important; font-weight: bold; border: none; }
-        nav[role="navigation"] a, nav[role="navigation"] span.relative.inline-flex { padding: 0.5rem 0.75rem; border: 1px solid #c4c7c7; margin: 0 0.2rem; border-radius: 0.25rem; font-size: 0.75rem; color: #1a1c1c; font-weight: bold;}
-        nav[role="navigation"] a:hover { background-color: #123656; color: white; border-color: #123656;}
-        nav[role="navigation"] svg { height: 1rem; width: 1rem; }
-    </style>
-    {{ $clientes->links() }}
-</div>
+        <div class="overflow-x-auto">
+        <table class="cds-table">
+            <thead>
+                <tr>
+                    <th>Nombre del cliente</th>
+                    <th>Cédula / RUC</th>
+                    <th>Plan contratado</th>
+                    <th>Estado</th>
+                    <th>Email</th>
+                    @if($esAdmin)<th class="text-right"><span class="sr-only">Acciones</span></th>@endif
+                </tr>
+            </thead>
+            <tbody>
+            @forelse($clientes as $client)
+                @php
+                    $contratoTab = is_numeric($tipoActivo)
+                        ? $client->contracts->first(fn($c) => optional($c->plan)->id_tipo == $tipoActivo)
+                        : null;
+                    $contratoTab = $contratoTab ?? $client->contracts->first();
+                @endphp
+                <tr>
+                    <td>
+                        <p class="cds-cell-strong">{{ $client->nombre }} {{ $client->apellido ?? '' }}</p>
+                        <p class="text-xs font-mono">CL-{{ str_pad($client->id_cliente ?? $client->id ?? 0, 5, '0', STR_PAD_LEFT) }}</p>
+                    </td>
+                    <td class="font-mono">{{ $client->cedula }}</td>
+                    <td>{{ optional(optional($contratoTab)->plan)->nombre_plan ?? 'Ninguno' }}</td>
+                    <td>
+                        @if($client->isBaja())
+                            <span class="cds-tag cds-tag--red">Baja</span>
+                        @elseif($client->contracts->count() > 0)
+                            <span class="cds-tag cds-tag--green">Activo</span>
+                        @else
+                            <span class="cds-tag cds-tag--gray">Sin contrato</span>
+                        @endif
+                    </td>
+                    <td class="max-w-[16rem] truncate" title="{{ $client->email }}">{{ $client->email }}</td>
+                    @if($esAdmin)
+                    <td class="text-right">
+                        <div class="flex justify-end">
+                            <a href="{{ route('clientes.edit', $client->id_cliente) }}" class="cds-btn cds-btn--ghost cds-btn--icon" title="Editar cliente" aria-label="Editar {{ $client->nombre }}">
+                                <span class="material-symbols-outlined">edit</span>
+                            </a>
+                            @if($client->isBaja())
+                                <form method="POST" action="{{ route('clientes.reactivar', $client->id_cliente) }}" onsubmit="return confirm('¿Reactivar a {{ $client->nombre }}?')">
+                                    @csrf
+                                    <button type="submit" class="cds-btn cds-btn--ghost cds-btn--icon" title="Reactivar" aria-label="Reactivar {{ $client->nombre }}">
+                                        <span class="material-symbols-outlined">restart_alt</span>
+                                    </button>
+                                </form>
+                            @else
+                                <a href="{{ route('clientes.edit', $client->id_cliente) }}#baja" class="cds-btn cds-btn--danger-ghost cds-btn--icon" title="Dar de baja" aria-label="Dar de baja a {{ $client->nombre }}">
+                                    <span class="material-symbols-outlined">block</span>
+                                </a>
+                            @endif
+                        </div>
+                    </td>
+                    @endif
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="{{ $esAdmin ? 6 : 5 }}" class="!py-10 text-center">{{ $busqueda !== '' ? 'No se encontraron clientes con esa búsqueda en esta pestaña.' : 'No hay clientes en esta pestaña.' }}</td>
+                </tr>
+            @endforelse
+            </tbody>
+        </table>
+        </div>
+        <div class="cds-pagination">{{ $clientes->links() }}</div>
+    </div>
 </div>
 @endsection

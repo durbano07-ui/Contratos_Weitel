@@ -17,39 +17,79 @@ class ClientController extends Controller
         $this->clientService = $clientService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
 
+        // Clientes visibles según rol/base
+        $base = Client::query();
         if (!$user->isAdminGeneral()) {
             // Administrativo: clientes de sus propios contratos. Administrador de base: clientes de su base.
             $clienteIds = \App\Models\Contract::visibleTo($user)->pluck('id_cliente');
-            $clientes   = Client::with(['contracts.plan'])
-                            ->whereIn('id_cliente', $clienteIds)
-                            ->orderBy('created_at', 'desc')
-                            ->paginate(10);
-
-            $total_clientes = $clientes->total();
-            $clientes_baja  = Client::whereIn('id_cliente', $clienteIds)->where('estado', 'baja')->count();
-            $nuevos_mes     = Client::whereIn('id_cliente', $clienteIds)
-                                ->whereMonth('created_at', \Carbon\Carbon::now()->month)
-                                ->whereYear('created_at', \Carbon\Carbon::now()->year)
-                                ->count();
-        } else {
-            // El Administrador general ve todos los clientes
-            $total_clientes = Client::count();
-            $clientes_baja  = Client::where('estado', 'baja')->count();
-            $nuevos_mes     = Client::whereMonth('created_at', \Carbon\Carbon::now()->month)
-                                    ->whereYear('created_at', \Carbon\Carbon::now()->year)
-                                    ->count();
-            $clientes = Client::with(['contracts.plan'])->orderBy('estado')->orderBy('created_at', 'desc')->paginate(10);
+            $base->whereIn('id_cliente', $clienteIds);
         }
+
+        // Estadísticas generales (no dependen de la pestaña ni de la búsqueda)
+        $total_clientes = (clone $base)->count();
+        $clientes_baja  = (clone $base)->where('estado', 'baja')->count();
+        $nuevos_mes     = (clone $base)->whereMonth('created_at', now()->month)
+                                       ->whereYear('created_at', now()->year)
+                                       ->count();
+
+        // Pestañas por tipo de conexión (Fibra Óptica / Radio Enlace)
+        $tipos = \App\Models\InternetType::orderBy('id_tipo')->get();
+        foreach ($tipos as $t) {
+            $t->clientes_count = (clone $base)
+                ->whereHas('contracts.plan', fn ($q) => $q->where('id_tipo', $t->id_tipo))
+                ->count();
+        }
+        $sin_contrato_count = (clone $base)->doesntHave('contracts')->count();
+
+        $tipoParam = $request->query('tipo');
+        if ($tipoParam === 'sin') {
+            $tipoActivo = 'sin';
+        } else {
+            $tipoActivo = optional($tipos->firstWhere('id_tipo', (int) $tipoParam))->id_tipo
+                ?? optional($tipos->first(fn ($t) => $t->clientes_count > 0))->id_tipo
+                ?? optional($tipos->first())->id_tipo;
+        }
+
+        // Búsqueda por nombre, apellido, cédula/RUC o email
+        $busqueda = trim((string) $request->query('q', ''));
+
+        $query = (clone $base);
+        if ($tipoActivo === 'sin') {
+            $query->doesntHave('contracts');
+        } elseif ($tipoActivo) {
+            $query->whereHas('contracts.plan', fn ($q) => $q->where('id_tipo', $tipoActivo));
+        }
+        if ($busqueda !== '') {
+            $like = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $busqueda) . '%';
+            $query->where(function ($q) use ($like) {
+                $q->where('nombre', 'like', $like)
+                  ->orWhere('apellido', 'like', $like)
+                  ->orWhere('cedula', 'like', $like)
+                  ->orWhere('email', 'like', $like)
+                  ->orWhereRaw("CONCAT(nombre, ' ', COALESCE(apellido, '')) LIKE ?", [$like]);
+            });
+        }
+
+        $clientes = $query->with(['contracts.plan'])
+                          ->orderBy('estado')
+                          ->orderBy('created_at', 'desc')
+                          ->paginate(10)
+                          ->withQueryString();
 
         return view('clientes.index', compact(
             'total_clientes',
             'nuevos_mes',
+            'clientes_baja',
             'clientes',
-        ) + ['clientes_baja' => $clientes_baja ?? 0]);
+            'tipos',
+            'tipoActivo',
+            'sin_contrato_count',
+            'busqueda',
+        ));
     }
 
     // -------------------------------------------------------
@@ -80,6 +120,10 @@ class ClientController extends Controller
             'provincia'  => 'nullable|string|max:100',
             'n_telefono' => 'nullable|string|max:20',
         ]);
+
+        // La columna "apellido" no admite NULL y la mayoría de clientes guarda el nombre completo en "nombre":
+        // un apellido vacío llega como null (ConvertEmptyStringsToNull) y debe guardarse como cadena vacía.
+        $data['apellido'] = $data['apellido'] ?? '';
 
         $cliente->update($data);
 
