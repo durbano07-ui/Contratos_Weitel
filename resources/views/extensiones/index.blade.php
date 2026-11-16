@@ -1,85 +1,87 @@
 @extends('layouts.app')
 
-@section('header_title', 'Extensiones de Email')
+@section('header_title', 'Extensiones de email')
 @section('header_subtitle', 'Dominios de correo disponibles al registrar un cliente')
 
 @section('content')
 
-<div class="flex justify-between items-end flex-wrap gap-4">
-    <div class="pl-4 border-l-4 border-secondary">
-        <h3 class="text-sm font-label uppercase tracking-widest text-on-surface-variant">Catálogo</h3>
-        <h2 class="text-3xl font-headline font-extrabold tracking-tight -mt-1">Extensiones Disponibles</h2>
-    </div>
-    <form method="POST" action="{{ route('extensiones.store') }}" class="flex items-center gap-2">
-        @csrf
-        <div class="flex items-center rounded-lg border border-outline-variant bg-surface-container-lowest overflow-hidden">
-            <span class="pl-3 text-sm text-on-surface-variant font-semibold">@</span>
-            <input type="text" name="dominio" maxlength="100" required placeholder="ejemplo.com" value="{{ old('_editing') ? '' : old('dominio') }}"
-                class="w-48 px-2 py-2.5 bg-transparent border-0 text-sm focus:ring-0">
+<div class="cds-card">
+    <div class="cds-table-toolbar flex-wrap">
+        <div>
+            <h2 class="cds-section-title">Extensiones disponibles</h2>
+            <p class="cds-label-01 mt-1">{{ $extensiones->count() }} extensión(es)</p>
         </div>
-        <button type="submit" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-secondary transition-all duration-300 text-sm font-semibold shadow-lg shadow-primary/10">
-            <span class="material-symbols-outlined" style="font-size:18px">add</span>
-            <span>Agregar</span>
-        </button>
-    </form>
-</div>
+        <form method="POST" action="{{ route('extensiones.store') }}" class="flex items-end gap-2 w-full sm:w-auto">
+            @csrf
+            <div class="flex-1 min-w-0">
+                <label for="nuevo-dominio" class="cds-label-01 block mb-1">Nueva extensión</label>
+                <div class="flex items-center bg-[#f4f4f4] border-b border-outline">
+                    <span class="pl-3 text-sm text-on-surface-variant">@</span>
+                    <input id="nuevo-dominio" type="text" name="dominio" maxlength="100" required placeholder="ejemplo.com" value="{{ old('_editing') ? '' : old('dominio') }}"
+                           class="cds-text-input w-full sm:!w-52 !bg-transparent !border-0 !pl-1">
+                </div>
+            </div>
+            <button type="submit" class="cds-btn cds-btn--primary cds-btn--md">
+                <span>Agregar</span>
+                <span class="material-symbols-outlined">add</span>
+            </button>
+        </form>
+    </div>
+    @error('dominio')
+    <p class="bg-[#fff1f1] border-l-[3px] border-[#da1e28] px-4 py-3 text-sm text-primary" role="alert">{{ $message }}</p>
+    @enderror
 
-@error('dominio')
-<p class="text-sm text-secondary font-semibold">{{ $message }}</p>
-@enderror
-
-<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_24px_48px_-12px_rgba(26,28,28,0.08)]">
-    <table class="w-full text-left border-collapse">
+    <div class="overflow-x-auto">
+    <table class="cds-table">
         <thead>
-            <tr class="bg-surface-container-low/50">
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Extensión</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Clientes</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant text-right">Acciones</th>
+            <tr>
+                <th>Extensión</th>
+                <th>Clientes</th>
+                <th class="text-right"><span class="sr-only">Acciones</span></th>
             </tr>
         </thead>
-        <tbody class="text-sm font-body">
-            @forelse($extensiones as $ext)
-            <tr class="hover:bg-surface transition-colors {{ $loop->even ? 'bg-surface-container-low/30' : '' }}">
-                <td class="p-4">
-                    <span class="font-semibold text-primary" id="ext-label-{{ $ext->id }}">&#64;{{ $ext->dominio }}</span>
-                    <form method="POST" action="{{ route('extensiones.update', $ext->id) }}" id="ext-form-{{ $ext->id }}" class="hidden items-center gap-2">
+        <tbody>
+        @forelse($extensiones as $ext)
+            <tr>
+                <td>
+                    <span class="cds-cell-strong font-mono" id="ext-label-{{ $ext->id }}">&#64;{{ $ext->dominio }}</span>
+                    <form method="POST" action="{{ route('extensiones.update', $ext->id) }}" id="ext-form-{{ $ext->id }}" class="hidden items-center gap-1">
                         @csrf
                         @method('PUT')
                         <input type="hidden" name="_editing" value="{{ $ext->id }}">
-                        <span class="text-on-surface-variant font-semibold">@</span>
-                        <input type="text" name="dominio" maxlength="100" required value="{{ $ext->dominio }}"
-                            class="w-48 px-2 py-1.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-sm">
-                        <button type="submit" class="p-1.5 hover:text-primary rounded-lg" title="Guardar">
-                            <span class="material-symbols-outlined" style="font-size:18px">check</span>
+                        <span class="text-on-surface-variant">@</span>
+                        <input type="text" name="dominio" maxlength="100" required value="{{ $ext->dominio }}" aria-label="Editar extensión"
+                               class="cds-text-input !w-52 !h-8 !bg-[#f4f4f4] font-mono">
+                        <button type="submit" class="cds-btn cds-btn--ghost cds-btn--icon !min-h-8 !w-8" title="Guardar" aria-label="Guardar">
+                            <span class="material-symbols-outlined">check</span>
                         </button>
-                        <button type="button" class="p-1.5 hover:text-secondary rounded-lg" title="Cancelar" onclick="toggleEdit({{ $ext->id }}, false)">
-                            <span class="material-symbols-outlined" style="font-size:18px">close</span>
+                        <button type="button" class="cds-btn cds-btn--ghost cds-btn--icon !min-h-8 !w-8" title="Cancelar" aria-label="Cancelar" onclick="toggleEdit({{ $ext->id }}, false)">
+                            <span class="material-symbols-outlined">close</span>
                         </button>
                     </form>
                 </td>
-                <td class="p-4">
-                    <span class="px-2 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full">
-                        {{ $ext->clientes_count }} clientes
-                    </span>
-                </td>
-                <td class="p-4 text-right whitespace-nowrap">
-                    <button type="button" class="p-2 hover:text-primary hover:bg-surface-container rounded-lg transition-colors" title="Editar" onclick="toggleEdit({{ $ext->id }}, true)">
-                        <span class="material-symbols-outlined" style="font-size:18px">edit</span>
-                    </button>
-                    <form method="POST" action="{{ route('extensiones.destroy', $ext->id) }}" class="inline" onsubmit="return confirm('¿Eliminar la extensión &#64;{{ $ext->dominio }}? Los correos de clientes existentes no se modifican.')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="p-2 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
-                            <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+                <td><span class="cds-tag cds-tag--gray">{{ $ext->clientes_count }} clientes</span></td>
+                <td class="text-right whitespace-nowrap">
+                    <div class="flex justify-end">
+                        <button type="button" class="cds-btn cds-btn--ghost cds-btn--icon" title="Editar" aria-label="Editar &#64;{{ $ext->dominio }}" onclick="toggleEdit({{ $ext->id }}, true)">
+                            <span class="material-symbols-outlined">edit</span>
                         </button>
-                    </form>
+                        <form method="POST" action="{{ route('extensiones.destroy', $ext->id) }}" class="inline-flex" onsubmit="return confirm('¿Eliminar la extensión &#64;{{ $ext->dominio }}? Los correos de clientes existentes no se modifican.')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="cds-btn cds-btn--danger-ghost cds-btn--icon" title="Eliminar" aria-label="Eliminar &#64;{{ $ext->dominio }}">
+                                <span class="material-symbols-outlined">delete</span>
+                            </button>
+                        </form>
+                    </div>
                 </td>
             </tr>
-            @empty
-            <tr><td colspan="3" class="p-6 text-center text-on-surface-variant">No hay extensiones registradas.</td></tr>
-            @endforelse
+        @empty
+            <tr><td colspan="3" class="!py-10 text-center">No hay extensiones registradas.</td></tr>
+        @endforelse
         </tbody>
     </table>
+    </div>
 </div>
 
 <script>

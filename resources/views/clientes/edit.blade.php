@@ -1,166 +1,153 @@
 @extends('layouts.app')
 
-@section('header_title', 'Editar Cliente')
+@section('header_title', 'Editar cliente')
 @section('header_subtitle', 'Modificar datos del cliente: ' . $cliente->nombre . ' ' . $cliente->apellido)
 
 @section('content')
-<div class="max-w-3xl mx-auto space-y-6">
+<div class="max-w-3xl space-y-6">
 
-    <!-- Card principal de edición -->
-    <div class="bg-surface-container-lowest rounded-xl shadow-[0_24px_48px_-12px_rgba(26,28,28,0.08)] overflow-hidden">
-        <div class="p-6 bg-surface-container-low border-b border-outline-variant/30 flex items-center justify-between">
-            <div>
-                <h2 class="font-headline font-bold text-xl">Datos del Cliente</h2>
-                <p class="text-sm text-on-surface-variant mt-1">
-                    ID: <strong>CL-{{ str_pad($cliente->id_cliente, 5, '0', STR_PAD_LEFT) }}</strong>
-                    · Cédula/RUC: <strong>{{ $cliente->cedula }}</strong>
-                </p>
+    <!-- Datos del cliente -->
+    <form action="{{ route('clientes.update', $cliente->id_cliente) }}" method="POST" class="cds-form">
+        @csrf
+        @method('PUT')
+
+        <div class="cds-form-section space-y-6">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <h2 class="cds-form-section-title">Datos del cliente</h2>
+                    <p class="cds-form-section-desc font-mono">CL-{{ str_pad($cliente->id_cliente, 5, '0', STR_PAD_LEFT) }} · {{ $cliente->cedula }}</p>
+                </div>
+                @if($cliente->isBaja())
+                    <span class="cds-tag cds-tag--red">Dado de baja</span>
+                @else
+                    <span class="cds-tag cds-tag--green">Activo</span>
+                @endif
             </div>
-            @if($cliente->isBaja())
-                <span class="px-3 py-1.5 bg-red-100 text-red-700 text-xs font-bold uppercase tracking-wider rounded-full flex items-center space-x-1">
-                    <span class="material-symbols-outlined" style="font-size:14px">block</span>
-                    <span>Dado de Baja</span>
-                </span>
-            @else
-                <span class="px-3 py-1.5 bg-green-100 text-green-800 text-xs font-bold uppercase tracking-wider rounded-full">Activo</span>
-            @endif
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="cds-form-item">
+                    <label class="cds-label" for="nombre">Nombre</label>
+                    <input id="nombre" name="nombre" type="text" required maxlength="100" class="cds-text-input"
+                           value="{{ old('nombre', $cliente->nombre) }}" @error('nombre') aria-invalid="true" @enderror>
+                    <x-cds-field-error name="nombre" />
+                </div>
+                <div class="cds-form-item">
+                    <label class="cds-label" for="apellido">Apellido <span class="cds-optional">(opcional)</span></label>
+                    <input id="apellido" name="apellido" type="text" class="cds-text-input"
+                           value="{{ old('apellido', $cliente->apellido) }}" @error('apellido') aria-invalid="true" @enderror>
+                    <x-cds-field-error name="apellido" />
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div class="cds-form-item">
+                    <label class="cds-label" for="cedula">Cédula / RUC</label>
+                    <input id="cedula" name="cedula" type="text" required inputmode="numeric" pattern="[0-9]{10}|[0-9]{13}" maxlength="13"
+                           title="Cédula (10 dígitos) o RUC (13 dígitos)" class="cds-text-input font-mono"
+                           oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                           value="{{ old('cedula', $cliente->cedula) }}" @error('cedula') aria-invalid="true" @enderror>
+                    <x-cds-field-error name="cedula" />
+                </div>
+                <div class="cds-form-item">
+                    <label class="cds-label" for="n_telefono">Teléfono</label>
+                    <input id="n_telefono" name="n_telefono" type="text" maxlength="20" class="cds-text-input font-mono"
+                           value="{{ old('n_telefono', $cliente->n_telefono) }}" @error('n_telefono') aria-invalid="true" @enderror>
+                    <x-cds-field-error name="n_telefono" />
+                </div>
+            </div>
+
+            <div class="cds-form-item">
+                <label class="cds-label" for="email">Correo electrónico</label>
+                <input id="email" name="email" type="email" class="cds-text-input"
+                       value="{{ old('email', $cliente->email) }}" @error('email') aria-invalid="true" @enderror>
+                <x-cds-field-error name="email" />
+            </div>
         </div>
 
-        <form action="{{ route('clientes.update', $cliente->id_cliente) }}" method="POST" class="p-6 space-y-5">
-            @csrf
-            @method('PUT')
-
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="nombre">Nombre</label>
-                    <input id="nombre" name="nombre" type="text" value="{{ old('nombre', $cliente->nombre) }}"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all @error('nombre') border-error @enderror"
-                        required>
-                    @error('nombre')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
+        <div class="cds-form-section space-y-6">
+            <h3 class="cds-form-section-title">Ubicación</h3>
+            <div class="cds-form-item">
+                <label class="cds-label" for="direccion">Dirección</label>
+                <input id="direccion" name="direccion" type="text" maxlength="255" class="cds-text-input"
+                       value="{{ old('direccion', $cliente->direccion) }}" @error('direccion') aria-invalid="true" @enderror>
+                <x-cds-field-error name="direccion" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="cds-form-item">
+                    <label class="cds-label" for="provincia">Provincia</label>
+                    <input id="provincia" name="provincia" type="text" maxlength="100" class="cds-text-input" value="{{ old('provincia', $cliente->provincia) }}">
+                    <x-cds-field-error name="provincia" />
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="apellido">Apellido</label>
-                    <input id="apellido" name="apellido" type="text" value="{{ old('apellido', $cliente->apellido) }}"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all">
+                <div class="cds-form-item">
+                    <label class="cds-label" for="canton">Cantón</label>
+                    <input id="canton" name="canton" type="text" maxlength="100" class="cds-text-input" value="{{ old('canton', $cliente->canton) }}">
+                    <x-cds-field-error name="canton" />
+                </div>
+                <div class="cds-form-item">
+                    <label class="cds-label" for="ciudad">Ciudad</label>
+                    <input id="ciudad" name="ciudad" type="text" maxlength="100" class="cds-text-input" value="{{ old('ciudad', $cliente->ciudad) }}">
+                    <x-cds-field-error name="ciudad" />
+                </div>
+                <div class="cds-form-item">
+                    <label class="cds-label" for="parroquia">Parroquia</label>
+                    <input id="parroquia" name="parroquia" type="text" maxlength="100" class="cds-text-input" value="{{ old('parroquia', $cliente->parroquia) }}">
+                    <x-cds-field-error name="parroquia" />
                 </div>
             </div>
+        </div>
 
-            <div class="grid grid-cols-2 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="cedula">Cédula / RUC</label>
-                    <input id="cedula" name="cedula" type="text" value="{{ old('cedula', $cliente->cedula) }}"
-                        inputmode="numeric" pattern="[0-9]{10}|[0-9]{13}" maxlength="13" title="Cédula (10 dígitos) o RUC (13 dígitos)"
-                        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all @error('cedula') border-error @enderror"
-                        required>
-                    @error('cedula')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="n_telefono">Teléfono</label>
-                    <input id="n_telefono" name="n_telefono" type="text" value="{{ old('n_telefono', $cliente->n_telefono) }}"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all">
-                </div>
-            </div>
+        <div class="cds-form-actions">
+            <a href="{{ route('clientes.index') }}" class="cds-btn cds-btn--secondary">Cancelar</a>
+            <button type="submit" class="cds-btn cds-btn--primary">
+                <span>Guardar cambios</span>
+                <span class="material-symbols-outlined">check</span>
+            </button>
+        </div>
+    </form>
 
+    <!-- Dar de baja / Reactivar -->
+    <section id="baja" class="cds-form scroll-mt-6">
+        <div class="flex items-start gap-3">
+            <span class="material-symbols-outlined {{ $cliente->isBaja() ? 'text-[#24a148]' : 'text-[#da1e28]' }}" style="font-size:24px">{{ $cliente->isBaja() ? 'restart_alt' : 'block' }}</span>
             <div>
-                <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="email">Correo Electrónico</label>
-                <input id="email" name="email" type="email" value="{{ old('email', $cliente->email) }}"
-                    class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all @error('email') border-error @enderror">
-                @error('email')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
-            </div>
-
-            <div>
-                <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="direccion">Dirección</label>
-                <input id="direccion" name="direccion" type="text" value="{{ old('direccion', $cliente->direccion) }}"
-                    class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all">
-            </div>
-
-            <div class="grid grid-cols-3 gap-4">
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="ciudad">Ciudad</label>
-                    <input id="ciudad" name="ciudad" type="text" value="{{ old('ciudad', $cliente->ciudad) }}"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="canton">Cantón</label>
-                    <input id="canton" name="canton" type="text" value="{{ old('canton', $cliente->canton) }}"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="parroquia">Parroquia</label>
-                    <input id="parroquia" name="parroquia" type="text" value="{{ old('parroquia', $cliente->parroquia) }}"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-on-surface-variant mb-1.5" for="provincia">Provincia</label>
-                    <input id="provincia" name="provincia" type="text" value="{{ old('provincia', $cliente->provincia) }}"
-                        class="w-full bg-surface-container border border-outline-variant rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all">
-                </div>
-            </div>
-
-            <div class="flex justify-between items-center pt-4 border-t border-outline-variant/30">
-                <a href="{{ route('clientes.index') }}" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-on-surface-variant hover:bg-surface-container transition-colors">
-                    ← Volver
-                </a>
-                <button type="submit" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-secondary transition-all duration-300 shadow-lg shadow-primary/10">
-                    Guardar Cambios
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Card de Dar de Baja / Reactivar -->
-    <div class="bg-surface-container-lowest rounded-xl shadow-[0_24px_48px_-12px_rgba(26,28,28,0.08)] overflow-hidden border {{ $cliente->isBaja() ? 'border-green-200' : 'border-red-200' }}">
-        <div class="p-5 flex items-center space-x-3 {{ $cliente->isBaja() ? 'bg-green-50' : 'bg-red-50' }} border-b {{ $cliente->isBaja() ? 'border-green-200' : 'border-red-200' }}">
-            <span class="material-symbols-outlined {{ $cliente->isBaja() ? 'text-green-600' : 'text-red-600' }}" style="font-variation-settings: 'FILL' 1; font-size:22px">
-                {{ $cliente->isBaja() ? 'check_circle' : 'block' }}
-            </span>
-            <div>
-                <p class="font-semibold text-sm {{ $cliente->isBaja() ? 'text-green-800' : 'text-red-800' }}">
-                    {{ $cliente->isBaja() ? 'Reactivar Cliente' : 'Dar de Baja' }}
-                </p>
-                <p class="text-xs {{ $cliente->isBaja() ? 'text-green-700' : 'text-red-700' }}">
+                <h2 class="cds-form-section-title">{{ $cliente->isBaja() ? 'Reactivar cliente' : 'Dar de baja' }}</h2>
+                <p class="cds-form-section-desc">
                     {{ $cliente->isBaja()
                         ? 'Baja registrada el ' . \Carbon\Carbon::parse($cliente->fecha_baja)->format('d/m/Y') . '. Motivo: ' . $cliente->motivo_baja
-                        : 'El cliente permanecerá en el sistema pero marcado como inactivo.'
+                        : 'El cliente permanecerá en el sistema, pero marcado como inactivo. Se puede revertir más adelante.'
                     }}
                 </p>
             </div>
         </div>
 
         @if($cliente->isBaja())
-            {{-- Reactivar --}}
-            <form action="{{ route('clientes.reactivar', $cliente->id_cliente) }}" method="POST" class="p-5">
+            <form action="{{ route('clientes.reactivar', $cliente->id_cliente) }}" method="POST" class="cds-form-actions">
                 @csrf
-                <button type="submit"
-                    onclick="return confirm('¿Reactivar a {{ $cliente->nombre }}? Se restaurará su estado como cliente activo.')"
-                    class="w-full bg-green-600 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-green-700 transition-all duration-300 flex items-center justify-center space-x-2">
-                    <span class="material-symbols-outlined" style="font-size:18px">restart_alt</span>
-                    <span>Reactivar Cliente</span>
+                <button type="submit" onclick="return confirm('¿Reactivar a {{ $cliente->nombre }}? Se restaurará su estado como cliente activo.')" class="cds-btn cds-btn--primary">
+                    <span>Reactivar cliente</span>
+                    <span class="material-symbols-outlined">restart_alt</span>
                 </button>
             </form>
         @else
-            {{-- Dar de baja --}}
-            <form action="{{ route('clientes.baja', $cliente->id_cliente) }}" method="POST" class="p-5 space-y-4">
+            <form action="{{ route('clientes.baja', $cliente->id_cliente) }}" method="POST" class="mt-6">
                 @csrf
-                <div>
-                    <label class="block text-sm font-semibold text-red-800 mb-1.5" for="motivo_baja">
-                        Motivo de la baja <span class="text-red-500">*</span>
-                    </label>
-                    <textarea id="motivo_baja" name="motivo_baja" rows="3" required minlength="10"
-                        placeholder="Indique el motivo por el cual se da de baja a este cliente..."
-                        class="w-full bg-white border border-red-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-red-400 transition-all resize-none @error('motivo_baja') border-error @enderror">{{ old('motivo_baja') }}</textarea>
-                    @error('motivo_baja')<p class="text-error text-xs mt-1">{{ $message }}</p>@enderror
+                <div class="cds-form-item">
+                    <label class="cds-label" for="motivo_baja">Motivo de la baja</label>
+                    <textarea id="motivo_baja" name="motivo_baja" rows="3" required minlength="10" class="cds-textarea"
+                              placeholder="Indique el motivo por el cual se da de baja a este cliente…"
+                              @error('motivo_baja') aria-invalid="true" @enderror>{{ old('motivo_baja') }}</textarea>
+                    <p class="cds-helper">Mínimo 10 caracteres.</p>
+                    <x-cds-field-error name="motivo_baja" />
                 </div>
-                <button type="submit"
-                    onclick="return confirm('¿Confirmar baja de {{ $cliente->nombre }}? Esta acción puede revertirse más adelante.')"
-                    class="w-full bg-red-600 text-white px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-700 transition-all duration-300 flex items-center justify-center space-x-2">
-                    <span class="material-symbols-outlined" style="font-size:18px">block</span>
-                    <span>Confirmar Baja</span>
-                </button>
+                <div class="cds-form-actions">
+                    <button type="submit" onclick="return confirm('¿Confirmar baja de {{ $cliente->nombre }}? Esta acción puede revertirse más adelante.')" class="cds-btn cds-btn--danger">
+                        <span>Confirmar baja</span>
+                        <span class="material-symbols-outlined">block</span>
+                    </button>
+                </div>
             </form>
         @endif
-    </div>
+    </section>
 
 </div>
 @endsection

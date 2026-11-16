@@ -1,61 +1,61 @@
 @extends('layouts.app')
 
-@section('header_title', 'Duración de Contratos')
+@section('header_title', 'Duración de contratos')
 @section('header_subtitle', 'Opciones de meses disponibles al crear un contrato')
 
 @section('content')
 
-<div class="flex justify-between items-end">
-    <div class="pl-4 border-l-4 border-secondary">
-        <h3 class="text-sm font-label uppercase tracking-widest text-on-surface-variant">Catálogo</h3>
-        <h2 class="text-3xl font-headline font-extrabold tracking-tight -mt-1">Duraciones Disponibles</h2>
+<div class="cds-card">
+    <div class="cds-table-toolbar flex-wrap">
+        <div>
+            <h2 class="cds-section-title">Duraciones disponibles</h2>
+            <p class="cds-label-01 mt-1">{{ $duraciones->count() }} opción(es)</p>
+        </div>
+        <form method="POST" action="{{ route('duraciones.store') }}" class="flex items-end gap-2 w-full sm:w-auto">
+            @csrf
+            <div class="flex-1 min-w-0">
+                <label for="meses" class="cds-label-01 block mb-1">Nueva duración (meses)</label>
+                <input id="meses" type="number" name="meses" min="1" max="120" required placeholder="Ej: 36" value="{{ old('meses') }}"
+                       class="cds-text-input w-full sm:!w-36 !bg-[#f4f4f4] font-mono" @error('meses') aria-invalid="true" @enderror>
+            </div>
+            <button type="submit" class="cds-btn cds-btn--primary cds-btn--md">
+                <span>Agregar</span>
+                <span class="material-symbols-outlined">add</span>
+            </button>
+        </form>
     </div>
-    <form method="POST" action="{{ route('duraciones.store') }}" class="flex items-center gap-2">
-        @csrf
-        <input type="number" name="meses" min="1" max="120" required placeholder="Meses" value="{{ old('meses') }}"
-            class="w-28 px-3 py-2.5 rounded-lg border border-outline-variant bg-surface-container-lowest text-sm">
-        <button type="submit" class="bg-primary text-on-primary px-6 py-2.5 rounded-lg flex items-center space-x-2 hover:bg-secondary transition-all duration-300 text-sm font-semibold shadow-lg shadow-primary/10">
-            <span class="material-symbols-outlined" style="font-size:18px">add</span>
-            <span>Agregar</span>
-        </button>
-    </form>
-</div>
+    @error('meses')
+    <p class="bg-[#fff1f1] border-l-[3px] border-[#da1e28] px-4 py-3 text-sm text-primary" role="alert">{{ $message }}</p>
+    @enderror
 
-@error('meses')
-<p class="text-sm text-secondary font-semibold">{{ $message }}</p>
-@enderror
-
-<div class="bg-surface-container-lowest rounded-xl overflow-hidden shadow-[0_24px_48px_-12px_rgba(26,28,28,0.08)]">
-    <table class="w-full text-left border-collapse">
+    <div class="overflow-x-auto">
+    <table class="cds-table">
         <thead>
-            <tr class="bg-surface-container-low/50">
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Duración</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant">Contratos</th>
-                <th class="p-4 font-label text-[11px] uppercase tracking-wider text-on-surface-variant text-right">Acciones</th>
+            <tr>
+                <th>Duración</th>
+                <th>Contratos</th>
+                <th class="text-right"><span class="sr-only">Acciones</span></th>
             </tr>
         </thead>
-        <tbody class="text-sm font-body">
-            @foreach($duraciones as $duracion)
-            <tr class="hover:bg-surface transition-colors {{ $loop->even ? 'bg-surface-container-low/30' : '' }}">
-                <td class="p-4 font-semibold text-primary">{{ $duracion->meses }} meses</td>
-                <td class="p-4">
-                    <span class="px-2 py-1 bg-surface-container text-on-surface-variant text-[10px] font-bold rounded-full">
-                        {{ $duracion->contracts_count }} contratos
-                    </span>
-                </td>
-                <td class="p-4 text-right">
-                    <form method="POST" action="{{ route('duraciones.destroy', $duracion->id) }}" class="inline" onsubmit="return confirm('¿Eliminar la opción de {{ $duracion->meses }} meses? Los contratos existentes no se modifican.')">
+        <tbody>
+        @foreach($duraciones as $duracion)
+            <tr>
+                <td class="cds-cell-strong">{{ $duracion->meses }} meses</td>
+                <td><span class="cds-tag cds-tag--gray">{{ $duracion->contracts_count }} contratos</span></td>
+                <td class="text-right">
+                    <form method="POST" action="{{ route('duraciones.destroy', $duracion->id) }}" class="inline-flex" onsubmit="return confirm('¿Eliminar la opción de {{ $duracion->meses }} meses? Los contratos existentes no se modifican.')">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="p-2 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Eliminar">
-                            <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+                        <button type="submit" class="cds-btn cds-btn--danger-ghost cds-btn--icon" title="Eliminar" aria-label="Eliminar {{ $duracion->meses }} meses">
+                            <span class="material-symbols-outlined">delete</span>
                         </button>
                     </form>
                 </td>
             </tr>
-            @endforeach
+        @endforeach
         </tbody>
     </table>
+    </div>
 </div>
 
 @endsection
